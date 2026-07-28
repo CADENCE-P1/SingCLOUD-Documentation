@@ -1,0 +1,98 @@
+---
+title: SingCLOUD Data Catalogue
+description: >-
+  Standardised documentation for the datasets available through SingCLOUD —
+  what each dataset contains, where it came from, whether it can be linked,
+  and who governs it.
+template: splash
+hero:
+  title: SingCLOUD Data Catalogue
+  tagline: >-
+    Standardised documentation for the datasets available through SingCLOUD,
+    written so stakeholders can evaluate, compare and select datasets
+    before committing to an access request.
+  actions:
+    - text: Browse the datasets
+      link: datasets/
+      icon: right-arrow
+      variant: primary
+    - text: Why this catalogue exists
+      link: guides/00_rationale/
+      icon: open-book
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard, Badge } from '@astrojs/starlight/components';
+
+## Four questions every stakeholder must answer
+
+Every dataset page answers the same four questions, in the same order, so that
+datasets can be compared like for like. An absent answer is recorded as
+*unknown* — never silently omitted.
+
+<CardGrid stagger>
+  <Card title="What is in it?" icon="document">
+    The type of information (clinical, lab, billing), the variables, the
+    population represented, the period covered, and when each variable started
+    being collected. — **§ 1 Content & Scope**
+  </Card>
+  <Card title="Where did it come from?" icon="setting">
+    How the data was collected and processed, and whether each field preserves
+    the raw source value or an interpretation of it. Every variable is labelled
+    **Raw**, **Standardised** or **Derived**. — **§ 2 Provenance & Processing**
+  </Card>
+  <Card title="Can I actually use it?" icon="puzzle">
+    Linkage keys and identifiers, coding standards, sample size, missingness
+    and known biases — everything that determines feasibility.
+    — **§ 3 Feasibility & Quality**
+  </Card>
+  <Card title="Am I allowed to use it?" icon="approve-check">
+    The data owner, access restrictions, approval requirements and realistic
+    lead times. — **§ 4 Ownership & Governance**
+  </Card>
+</CardGrid>
+
+## Documentation status
+
+Every page carries a status badge, so verified documentation is
+distinguishable from a working draft:
+
+- <Badge text="Verified" variant="success" /> — reviewed against the profiler
+  output **and** confirmed with the data owner
+- <Badge text="Draft" variant="caution" /> — written from profiler output
+  and/or analyst working knowledge; not owner-confirmed
+- <Badge text="Stub" variant="note" /> — dataset known to exist; contents not
+  yet documented
+
+:::caution[Coverage is the bigger caveat]
+13 dataset families are documented so far, but the platform holds roughly
+**80 families across 275 datasets**. Whole domains — billing, cardiac
+registries, cardiac imaging, procedures — have no page yet. Check the
+[full platform inventory](datasets/full_inventory/) before concluding that a
+dataset you need does not exist.
+:::
+
+## Start here
+
+<CardGrid>
+  <LinkCard
+    title="Dataset index"
+    description="Master table of documented datasets with status, identifiers and coverage at a glance."
+    href="datasets/"
+  />
+  <LinkCard
+    title="Full platform inventory"
+    description="The complete platform scope: ~80 dataset families, 275 datasets, ~734M rows."
+    href="datasets/full_inventory/"
+  />
+  <LinkCard
+    title="Documentation standard"
+    description="The four required sections that every dataset page must fill in."
+    href="guides/01_documentation_standard/"
+  />
+  <LinkCard
+    title="Linkage guide"
+    description="Identifiers, coding standards, and the pitfalls of joining datasets."
+    href="guides/03_linkage_guide/"
+  />
+</CardGrid>
