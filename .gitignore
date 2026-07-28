@@ -4,7 +4,7 @@ data_catalog_output/
 *.checkpoint.json
 
 # Data. Never commit extracts of any kind to this repository.
-*.csv
+# *.csv
 *.parquet
 *.xlsx
 *.xls
