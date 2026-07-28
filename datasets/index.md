@@ -1,6 +1,12 @@
 # Dataset index
 
-Master list of datasets known to this catalogue. Sorted by information type.
+Master list of datasets **documented** in this catalogue. Sorted by information type.
+
+> ⚠️ **This is 13 of roughly 80 dataset families on the platform.** The profiler summary
+> reports **275 datasets**, spanning billing, cardiac registries, imaging and procedures —
+> domains with no page here at all. See
+> [**full_inventory.md**](full_inventory.md) for the complete scope before concluding that
+> a dataset you need is unavailable.
 
 **Status:** ✅ Verified (profiler-checked *and* owner-confirmed) · 🟡 Draft (analyst
 knowledge, not owner-confirmed) · ⚪ Stub (known to exist, not documented)
@@ -73,6 +79,10 @@ decision and currently the least complete.
 
 These apply to nearly every page and are tracked here rather than repeated:
 
+0. **Coverage: 13 families documented, ~80 present.** See
+   [full_inventory.md](full_inventory.md). Undocumented domains include billing (the
+   largest on the platform at ~441M rows), cardiac registries, cardiac imaging, procedures
+   and the reference/lookup tables that define other datasets' coding standards.
 1. **Ownership and governance is undocumented for every dataset.** No data owner, approval
    requirement or lead time is recorded anywhere. Stakeholders currently cannot make the
    governance decision from this catalogue. See

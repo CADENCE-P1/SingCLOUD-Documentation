@@ -28,6 +28,29 @@ before committing, not after.
 `Event_Diagnosis_P1__columns.png`. Predictable names let dataset pages link directly to the
 evidence for a claim.
 
+### `mass_columns_screenshots/` — present on disk, deliberately untracked
+
+28 full-page screenshots (~159 MB) of the condensed profiler summary covering **275
+datasets**. Kept in `.gitignore` for two reasons:
+
+1. **`section_01.png` shows the S3 bucket name** in the report header — the one identifier
+   deliberately kept out of the rest of this repo.
+2. **They are screenshots of a text file.** 159 MB of PNG that nobody can grep, holding
+   content that is a few hundred KB as text.
+
+Rather than commit them, their contents were **OCR-transcribed into
+[`imported/profiler_summary_ocr.txt`](imported/profiler_summary_ocr.txt)** (1.2 MB,
+searchable, bucket name redacted), and the scope was summarised in
+[`datasets/full_inventory.md`](../datasets/full_inventory.md).
+
+The images remain on disk for reference and can be re-read at any time.
+
+> **The transcription is not a substitute for the source file.** OCR misreads characters,
+> and none of the digits are independently verified. Retrieving the real
+> `data_catalog_summary.txt` from the platform remains the recommended next step — it would
+> upgrade the inventory from "transcribed" to "verified" and close the "Not yet profiled"
+> gaps across every dataset page at once.
+
 ## `imported/`
 
 Working documentation carried over from an analysis project that used SingCLOUD. See the
@@ -47,3 +70,4 @@ Only dataset-descriptive material was retained.
 | `data_context_extract.md` | Analysis project data context, dataset sections only | Dataset inventory with observed row counts, date ranges, key columns |
 | `hf_diagnosis_data_context.md` | Analysis project catalogue notes | The most complete column manifests available — lab items, event diagnosis, mediclaims episodes |
 | `catalogue_config_snapshot.md` | Analysis pipeline configuration | Exact alias strings as used against the platform |
+| `profiler_summary_ocr.txt` | OCR of the 28 profiler screenshots | Row counts, column names, types and missingness for 218 datasets. Machine-transcribed — read its header before quoting any figure |

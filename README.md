@@ -40,7 +40,8 @@ docs/                     The documentation standard and cross-cutting guides
   03_linkage_guide.md            Identifiers, coding standards, linkage pitfalls
 
 datasets/                 One page per dataset family — the core of the catalogue
-  index.md                Master table of every dataset, with completeness status
+  index.md                Master table of documented datasets, with status
+  full_inventory.md       Complete platform scope: ~80 families, 275 datasets
   _TEMPLATE.md            Copy this to add a new dataset
   <dataset>.md
 
@@ -67,6 +68,12 @@ so readers can tell verified documentation from a working draft:
 
 Most pages are currently 🟡 **Draft**. See [datasets/index.md](datasets/index.md) for the
 per-dataset breakdown.
+
+**Coverage is the bigger caveat.** 13 dataset families are documented; the platform holds
+roughly **80 families across 275 datasets**. Whole domains — billing, cardiac registries,
+cardiac imaging, procedures — have no page yet. Check
+[datasets/full_inventory.md](datasets/full_inventory.md) before concluding a dataset you
+need does not exist.
 
 ---
 

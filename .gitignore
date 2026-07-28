@@ -32,5 +32,8 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Bulk profiler screenshots — pending review, see source_material/README.md
+source_material/screenshots/mass_columns_screenshots/
+
 # Personal Claude Code settings
 .claude/settings.local.json
