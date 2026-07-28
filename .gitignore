@@ -11,6 +11,8 @@ data_catalog_output/
 *.jsonl
 *.dta
 *.sav
+!source_material/imported/dataset_summary.csv
+!source_material/imported/column_summary.csv
 
 # Credentials and environment
 .env
@@ -31,6 +33,3 @@ venv/
 Thumbs.db
 .idea/
 .vscode/
-
-# Bulk profiler screenshots — pending review, see source_material/README.md
-source_material/screenshots/mass_columns_screenshots/
