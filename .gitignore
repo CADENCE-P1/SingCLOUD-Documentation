@@ -3,16 +3,19 @@
 data_catalog_output/
 *.checkpoint.json
 
-# Data. Never commit extracts of any kind to this repository.
-# *.csv
+# Data. Never commit patient-level extracts of any kind to this repository.
+#
+# *.csv is deliberately NOT ignored: the profiler's own summary CSVs
+# (source_material/imported/*.csv) are metadata about datasets — column names,
+# types, missingness — and belong here. The trade-off is that this file no
+# longer stops a real data extract from being committed by accident. Check what
+# a .csv actually contains before adding it.
 *.parquet
 *.xlsx
 *.xls
 *.jsonl
 *.dta
 *.sav
-!source_material/imported/dataset_summary.csv
-!source_material/imported/column_summary.csv
 
 # Credentials and environment
 .env
