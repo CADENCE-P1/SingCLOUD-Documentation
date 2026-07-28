@@ -1,0 +1,36 @@
+# Profiler output — read it before committing anything from it.
+# Free-text columns can contain patient detail; see tools/README.md.
+data_catalog_output/
+*.checkpoint.json
+
+# Data. Never commit extracts of any kind to this repository.
+*.csv
+*.parquet
+*.xlsx
+*.xls
+*.jsonl
+*.dta
+*.sav
+
+# Credentials and environment
+.env
+.env.*
+*.pem
+credentials
+aws_config
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Bulk profiler screenshots — pending review, see source_material/README.md
+source_material/screenshots/mass_columns_screenshots/
