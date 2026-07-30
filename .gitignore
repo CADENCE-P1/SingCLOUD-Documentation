@@ -3,8 +3,13 @@
 data_catalog_output/
 *.checkpoint.json
 
-# Data. Never commit extracts of any kind to this repository.
-*.csv
+# Data. Never commit patient-level extracts of any kind to this repository.
+#
+# *.csv is deliberately NOT ignored: the profiler's own summary CSVs
+# (source_material/imported/*.csv) are metadata about datasets — column names,
+# types, missingness — and belong here. The trade-off is that this file no
+# longer stops a real data extract from being committed by accident. Check what
+# a .csv actually contains before adding it.
 *.parquet
 *.xlsx
 *.xls
@@ -31,9 +36,6 @@ venv/
 Thumbs.db
 .idea/
 .vscode/
-
-# Bulk profiler screenshots — pending review, see source_material/README.md
-source_material/screenshots/mass_columns_screenshots/
 
 # Personal Claude Code settings
 .claude/settings.local.json

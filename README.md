@@ -4,6 +4,27 @@ A standardised data catalogue and documentation set for the datasets available t
 **SingCLOUD**, written for stakeholders who need to decide *whether SingCLOUD is suitable
 for their study* before committing to an access request.
 
+**📖 Browse the catalogue as a website:**
+<https://cadence-p1.github.io/SingCLOUD-Documentation/>
+
+---
+
+## The documentation site
+
+The catalogue is published with [Astro Starlight](https://starlight.astro.build/) from
+the [site/](site/) directory. The markdown in `docs/` and `datasets/` remains the single
+source of truth — a sync step copies it into the site at build time, so **editing the
+markdown here is all that is needed to update the site**. Pushing to `main` rebuilds and
+deploys automatically via GitHub Actions.
+
+To preview locally:
+
+```sh
+cd site
+npm install
+npm run dev     # http://localhost:4321/SingCLOUD-Documentation/
+```
+
 ---
 
 ## Why this repo exists

@@ -1,0 +1,8 @@
+# Build output and caches
+node_modules/
+dist/
+.astro/
+
+# Synced at build time from ../docs and ../datasets — edit those, not these
+src/content/docs/guides/
+src/content/docs/datasets/

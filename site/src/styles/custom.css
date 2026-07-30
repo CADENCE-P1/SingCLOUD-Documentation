@@ -1,0 +1,96 @@
+@import '@fontsource-variable/inter';
+
+/* ---------------------------------------------------------------------------
+ * Theme: clinical teal accent on Starlight's neutral greys.
+ * Starlight flips --sl-color-white/black between themes, so rules written
+ * against the semantic variables work in both light and dark mode.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  --sl-font: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Dark mode accent scale */
+  --sl-color-accent-low: #10332f;
+  --sl-color-accent: #14837a;
+  --sl-color-accent-high: #a9dcd6;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #d5efeb;
+  --sl-color-accent: #0b6d65;
+  --sl-color-accent-high: #0d403b;
+}
+
+/* --- Hero ---------------------------------------------------------------- */
+
+[data-has-hero] .hero {
+  padding-block: clamp(2rem, 8vh, 5rem);
+}
+
+[data-has-hero] .hero h1 {
+  background-image: linear-gradient(
+    100deg,
+    var(--sl-color-white) 30%,
+    var(--sl-color-accent-high)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[data-has-hero] .hero .tagline {
+  max-width: 44ch;
+}
+
+/* --- Cards --------------------------------------------------------------- */
+
+.sl-markdown-content .card,
+.sl-markdown-content .sl-link-card {
+  border-radius: 0.75rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sl-markdown-content .card:hover,
+.sl-markdown-content .sl-link-card:hover {
+  border-color: var(--sl-color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.35);
+}
+
+.sl-markdown-content .card .icon {
+  color: var(--sl-color-accent);
+}
+
+/* --- Content polish ------------------------------------------------------ */
+
+/* Dataset pages are table-heavy; keep tables compact and readable. */
+.sl-markdown-content table {
+  font-size: var(--sl-text-sm);
+}
+
+.sl-markdown-content th {
+  background-color: var(--sl-color-gray-6);
+  white-space: nowrap;
+}
+
+:root[data-theme='light'] .sl-markdown-content th {
+  background-color: var(--sl-color-gray-7, var(--sl-color-gray-6));
+}
+
+.sl-markdown-content code {
+  font-size: 0.85em;
+}
+
+/* The repo markdown uses `| | |` header rows for key–value tables (e.g. the
+ * status block atop each dataset page); hide the resulting empty header. */
+.sl-markdown-content thead tr:not(:has(th:not(:empty))) {
+  display: none;
+}
+
+/* Sidebar badges (Verified / Draft / Stub) shouldn't shout. */
+.sidebar-content .sl-badge {
+  font-size: 0.65rem;
+}
