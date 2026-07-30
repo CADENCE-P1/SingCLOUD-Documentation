@@ -14,10 +14,31 @@ Section order follows docs/00_rationale.md, so that a reader can answer, in orde
 {{PLACEHOLDERS}} are machine-fillable from tools/s3_data_catalog.py output
 (dataset_summary.csv / column_summary.csv). Everything else is written by hand.
 
+TWO PASSES
+  Pages are built in two passes, and a page is useful after the first.
+    Pass 1 — BASE PAGE. Everything the profiler summary establishes: objects,
+             sizes, rows, columns, column names, types, missingness. Plus the
+             two convention fields below. Everything else marked unknown.
+             Status ⚪ Stub.
+    Pass 2 — Fill from real analysis of the data and from the data owner:
+             descriptions, Class, coding, value domains, date ranges, linkage,
+             governance. Status 🟡 Draft, then ✅ Verified.
+  A worked pass-1 page is template_sample_singcloud-event-diagnosis_screenshots-only.md.
+  Write pass 1 without guessing: an honest unknown is worth more than a plausible
+  invention, because the invention is what a later reader will act on.
+
 FILL RULES
   - Unknown is a value. Write:  Unknown — to confirm with data owner
     Never delete a row. A missing row tells the reader nothing; an explicit gap
     tells them who to ask.
+  - Keep unknowns SHORT. "Unknown — to confirm with data owner" is the whole
+    entry. Do not explain that the profiler summary carries no min/max, no top
+    values and no distinct counts — that is a known property of the source, and
+    restating it on every field is noise.
+  - Two fields are filled by convention, not evidence, on every page:
+      Category            -> read from the dataset name
+      Primary identifier  -> the patient ID column
+    Both are marked at the point of use below. Neither is ever left unknown.
   - Use  n/a — <one-line reason>  when a field genuinely cannot apply.
   - Every number carries (source, date, scope):
     "5,084,554 rows (profiler, 2026-07-23, P1 only)" — never "~5M rows".
@@ -29,7 +50,10 @@ FILL RULES
   - No patient-level data, no study findings.
 
 Guidance for every field is at the bottom of this file, under
-"Appendix E — How to fill this in".
+"Appendix D — How to fill this in".
+
+A section-by-section explanation of what each part of this template is for —
+read this once before your first dataset page — is in template_intro.md.
 ================================================================================
 -->
 
@@ -42,13 +66,27 @@ Guidance for every field is at the bottom of this file, under
 | **Profiled on** | {{PROFILED_AT}} |
 | **Last reviewed** | *not yet reviewed* |
 
-<!-- One paragraph: what this dataset is, and the one thing a reader must not get wrong. -->
+**Objects included in this page**
+
+<!-- Every .csv this page was built from, by name, numbered. This is the first thing a reader
+checks: does this page describe the files I am holding? Name them even when there are twenty
+— a "P1…P8" pattern hides whether P7 was actually profiled. -->
+
+| # | Object |
+|---:|---|
+| 1 | `{{S3_KEY_BASENAME}}` |
+
+All sit under the prefix `<prefix-relative path>`. <!-- Then one line of totals: n objects,
+n rows, n columns each. -->
 
 ---
 
 ## Dataset Overview
 
-**Category:** <!-- clinical / laboratory / billing / administrative / registry / immunisation / demographic — may be more than one -->
+**Category:** <!-- READ IT FROM THE DATASET NAME. VW_EVENT_DIAGNOSIS_F -> "Event diagnosis".
+This field only tells a reader what kind of dataset they are looking at; it is not a claim
+about clinical content, and it never waits on a data dictionary or the data owner. Say it is
+name-derived and unconfirmed, but never leave it unknown. -->
 
 **Description:** <!-- 2–3 sentences. What it records and why it exists. -->
 
@@ -90,13 +128,32 @@ four rows". This is the single most misread property of a dataset. -->
 ## Key Variables
 
 <!-- EVERY column, in file order. Row count here must equal Appendix A. If the manifest is
-partial (fields used in one analysis rather than the full schema), say so explicitly. -->
+partial (fields used in one analysis rather than the full schema), say so explicitly.
 
-| Variable | Description | Type | Class | Coding / units | Missing % | Sensitivity | Notes |
-|---|---|---|---|---|---|---|---|
-| `<COLUMN>` | | {{TYPE}} | Raw / Standardised / Derived | | {{MISSING_PCT}} | Direct ID / Quasi-ID / Free text / — | |
+PASS 1 uses the table below: ordinal, name, type, and missing % PER PARTITION. One column
+per object, not a single averaged figure — the per-partition spread is evidence in its own
+right, and averaging destroys it. State plainly that the remaining fields are outstanding;
+do not fill them from column naming.
 
-**Class** — mandatory for every column:
+PASS 2 adds Description, Class, Coding / units and Sensitivity as further columns, or as a
+second table if the row gets too wide to read. -->
+
+| # | Variable | Type | P1 | P2 | P3 | … |
+|---:|---|---|---:|---:|---:|---:|
+| {{ORDINAL}} | `{{COLUMN}}` | {{TYPE}} | {{MISSING_PCT}} | | | |
+
+*(P1…Pn are missing %; profiler, {{PROFILED_AT}})*
+
+**Type** is the profiler's label and is provisional until pass 2. Where the profiler typed a
+column differently in different partitions, record BOTH readings rather than picking one —
+that disagreement is a real warning about the column's values.
+
+**Outstanding until pass 2, for every column:** Description, Class, Coding / units,
+Sensitivity. <!-- Say this explicitly rather than leaving blank cells. A suffix such as _STD,
+_TXT, _X or _Z is a naming convention, not evidence of how a value was produced — Class in
+particular cannot be read off a column name. -->
+
+**Class** — mandatory for every column by pass 2:
 
 | Class | Meaning | Suitable for | Not suitable for |
 |---|---|---|---|
@@ -107,19 +164,17 @@ partial (fields used in one analysis rather than the full schema), say so explic
 <!-- Where the source keeps paired columns (_X/_Z, _TXT/_TXT_STD), document BOTH rows and
 say in Notes which to prefer and why. -->
 
-### Value dictionaries
+<!-- This template does NOT enumerate the values of categorical columns. The condensed
+profiler report carries no top-values block, and transcribing value lists by hand for every
+categorical field, for every dataset family, is not sustainable. Where the domain of a field
+matters, point the reader at the reference object that defines it (a `VW_*_D_` dimension
+table, a published code list) rather than reproducing a sample of it here. -->
 
-<!-- For every categorical field used in cohort selection: residency, sex, race, status,
-case class, facility. Copied from profiler top-values. Full lists in Appendix B. -->
-
-**`<COLUMN>`** *(profiler, {{PROFILED_AT}} — top 20 by frequency, **not** the complete domain)*
-
-| Value | Count |
-|---|---:|
-| | |
-
-> Value strings drift between extracts (`SINGAPORE PINK IC` vs `SINGAPORE PINK NRIC`).
-> Enumerate the distinct values in your own extract before filtering.
+> **Value strings drift between extracts** (`SINGAPORE PINK IC` vs `SINGAPORE PINK NRIC`).
+> No page in this catalogue lists the values of a categorical column, so nothing here can be
+> copied into a filter. Enumerate the distinct values in your own extract before filtering,
+> and re-check them against each new extract — a value string that has drifted returns zero
+> rows without raising an error.
 
 ---
 
@@ -129,8 +184,14 @@ case class, facility. Copied from profiler top-values. Full lists in Appendix B.
 |---|---|---|---|
 | `<PRINCIPAL_DATE_COLUMN>` | {{DATE_MIN}} | {{DATE_MAX}} | profiler {{PROFILED_AT}} |
 
-<!-- List every date column whose range differs; the principal one first. A range taken from
-the wrong column is a common and invisible error. -->
+<!-- EVERY date column, one row each, principal one first. A range taken from the wrong column
+is a common and invisible error. On a pass-1 page every cell here is Unknown; leave the rows
+in, because the list of date columns is itself information. -->
+
+**Date format:** <!-- The format each date column is stored in, or Unknown. This belongs
+BEFORE any range is taken: the profiler parses dayfirst=True, so 01/02/2021 reads as
+1 February. If a column is month-first, every date derived from it is wrong and nothing
+raises. An unambiguous format (YYYY-MM-DD HH:MM:SS) makes the question moot — say so. -->
 
 **Completeness over the period:** <!-- A date range hides holes. Gaps, ramp-up periods, and
 truncated tails — a dataset that "runs to 2024-02-28" may just be when the extract was cut.
@@ -157,11 +218,13 @@ than hand-edit.*
 | `{{S3_KEY_BASENAME}}` | {{FILE_SIZE_MB}} | {{N_ROWS}} | {{N_COLS}} | {{OVERALL_MISSING_PCT}} |
 | **Family total** | | | | |
 
+*Every row count above is a lower bound: the profiler reads with `on_bad_lines="skip"`, so
+unparseable lines are dropped silently and never counted.*
+
 | Metric | Value |
 |---|---|
 | Sample size (distinct patients) | <!-- counted, or "not counted" --> |
 | Schema consistent across partitions | Yes / No / not checked |
-| Row counts are | a lower bound — the profiler skips unparseable lines |
 
 ---
 
@@ -220,13 +283,17 @@ dataset? A pseudonym re-minted per extract makes longitudinal linkage impossible
 
 **Disguised missing:** <!-- The profiler counts only "", NA, N/A, NULL, null, None, NaN and
 "." as missing. Sentinels like UNKNOWN, NIL, 9, 999, 1900-01-01 are counted as PRESENT.
-Hunt for these in the top-values output and list them here — a column reported 0.0% missing
-can be 40% unusable. Record "checked, none found" if that is the case. -->
+A column reported 0.0% missing can be 40% unusable. The condensed report gives no value
+profile, so this CANNOT be answered from the profiler — it needs a value_counts() against the
+extract, or the owner. Name the columns most likely to hide a sentinel and say the check is
+outstanding; record "checked, none found" only if someone actually ran it. -->
 
 ### Overlap
 
-**Primary identifier:** `<COLUMN>` — <!-- dtype as read, and format: leading zeros, casing,
-padding, and whether it is int64 in one partition and object in another -->
+**Primary identifier:** `<PATIENT_ID_COLUMN>` — <!-- THE PATIENT ID COLUMN IS ALWAYS THE
+PRIMARY IDENTIFIER on a page in this catalogue. Name it directly; never write "not
+determined". Then give what is genuinely uncertain: dtype as read, and format — leading
+zeros, casing, padding, and whether it is int64 in one partition and object in another. -->
 
 **Identifier family:** <!-- uin / PATIENT_ID_EXTN_X / other / unconfirmed. Cross-family joins
 need a crosswalk that may not exist — see docs/03_linkage_guide.md -->
@@ -284,7 +351,7 @@ Almost every field here is owner-only. See docs/02_access_and_governance.md. -->
 | **Typical lead time** | Unknown — to confirm with data owner <!-- stakeholders plan against this number: give a range and its basis --> |
 | **Permitted use / conditions** | Unknown — to confirm with data owner <!-- publication limits, small-cell suppression, output review, retention --> |
 | **Sensitivity classification** | Unknown — to confirm with data owner |
-| **Free-text / PII exposure** | <!-- columns marked Direct ID / Quasi-ID / Free text in Key Variables --> |
+| **Free-text / PII exposure** | <!-- Columns marked Direct ID / Quasi-ID / Free text in Key Variables. On a pass-1 page Sensitivity is not yet assigned: write "not assessed", list the columns the profiler typed id_like as the place to start, and say plainly that this is an outstanding task and NOT a finding that the dataset carries no PII. --> |
 | **Attribution / citation** | Unknown — to confirm with data owner |
 
 **Open questions for the data owner:**
@@ -294,32 +361,26 @@ meeting agenda. -->
 
 ---
 
-## Additional Notes
-
-- **Loading:** <!-- alias, delimiter, encoding, dtype=str on ID columns, chunking, memory -->
-- **Date parsing:** <!-- observed formats, dayfirst ambiguity, which of an _X/_Z pair to prefer -->
-- **Gotchas:** <!-- everything that cost someone an afternoon -->
-
-```python
-# Minimal correct load. No paths, no credentials, no patient data.
-```
-
----
-
 ## Appendix A — Full column profile
 
 *(profiler, {{PROFILED_AT}} — row count must match Key Variables)*
 
-| # | Variable | Type | Missing % | Distinct | Range / top values |
-|---:|---|---|---:|---:|---|
-| {{ORDINAL}} | `{{COLUMN}}` | {{INFERRED_TYPE}} | {{MISSING_PCT}} | {{N_UNIQUE_TRACKED}} | {{RANGE_OR_TOP_VALUES}} |
+<!-- The exhaustive per-column table. It exists so Key Variables can be curated and readable
+while this stays complete: a mismatch in row count between the two means a column was lost.
 
-## Appendix B — Value dictionaries
+Three fields per column, because three is what the condensed report carries. Do not add
+distinct counts, ranges or top values unless a run that actually produced them is cited.
 
-<!-- Full top-20 lists per categorical column. Category labels only — never quote values from
-an id_like or free-text column. -->
+ON A PASS-1 PAGE this table is identical to Key Variables character for character. Do not
+duplicate it — write one line saying the profile IS the Key Variables table and is not
+repeated, and give the row count. Split them at pass 2, when Key Variables gains descriptions
+and Class and the two genuinely diverge. -->
 
-## Appendix C — Change log
+| # | Variable | Type | Missing % |
+|---:|---|---|---:|
+| {{ORDINAL}} | `{{COLUMN}}` | {{INFERRED_TYPE}} | {{MISSING_PCT}} |
+
+## Appendix B — Change log
 
 | Date | Change | By |
 |---|---|---|
@@ -328,7 +389,7 @@ an id_like or free-text column. -->
 <!-- A re-profile entry should record the delta in rows and columns. A page without a change
 log cannot tell a reader whether it describes the extract they are holding. -->
 
-## Appendix D — Sources
+## Appendix C — Sources
 
 - Profiler run {{PROFILED_AT}} — `data_catalog_summary.txt`
 - `source_material/screenshots/mass_columns_screenshots/section_<nn>.png`
@@ -338,25 +399,30 @@ log cannot tell a reader whether it describes the extract they are holding. -->
 ---
 ---
 
-# Appendix E — How to fill this in
+# Appendix D — How to fill this in
 
 *Delete this appendix from the filled copy. It belongs to the template, not to any dataset.*
 
-## E.1 Where each field comes from
+## D.1 Where each field comes from
 
-Every field is fillable from one of four sources. Knowing which tells you what you can
+Every field is fillable from one of five sources. Knowing which tells you what you can
 finish this afternoon and what is blocked on someone else.
 
 | Tag | Source | Fillable now? |
 |---|---|---|
 | **[P]** | Profiler — `data_catalog_summary.txt`, `dataset_summary.csv`, `column_summary.csv` | Yes, mechanically. Cite the run date |
+| **[C]** | Catalogue convention — the answer is fixed by a rule, not by evidence | Yes, always. Never left unknown |
 | **[A]** | Analyst observation — inspecting the extract, reading load code, prior project notes | Yes, but label it observed-in-*which*-extract |
 | **[O]** | Data owner only — not derivable from the data at all | No. Write the unknown marker and add it to the open-questions list |
 | **[D]** | Derived judgement — your interpretation of [P]/[A] evidence | Yes, but show the reasoning so a reader can disagree |
 
+**[P]** and **[C]** together are pass 1. Everything else is pass 2.
+
 | Section | Field | Tag |
 |---|---|---|
-| Overview | Category, Description | [D] |
+| Header | Objects included | [P] |
+| Overview | Category | **[C]** — from the dataset name |
+| | Description | [D] |
 | | Data source, Population, Institutional coverage, Refresh cadence | [O] |
 | | Unit of observation, Aliases, Extract date | [A] |
 | | Rows vs people | [P] rows + [A] patients |
@@ -364,22 +430,22 @@ finish this afternoon and what is blocked on someone else.
 | Key Variables | Variable names, Type, Missing % | [P] |
 | | Description, Coding / units | [A] + [O] |
 | | Class, Sensitivity | [D] |
-| | Value dictionaries | [P] |
 | Time Coverage | Start / End per date column | [P] |
 | | Completeness over the period | [P] + [D] |
 | | Variable availability over time | [P] + [O] |
 | Dataset Information | Everything except distinct patients | [P] |
 | Provenance | Every field except *what is lost* | [O] |
 | | Raw vs interpreted — what is lost | [D] |
-| Data Quality | Missingness figures, value-range anomalies, schema drift | [P] |
-| | Disguised missing, duplicates, identifiers, linkage pitfalls | [A] |
+| Data Quality | Missingness figures, schema drift | [P] |
+| | Primary identifier | **[C]** — the patient ID column |
+| | Value-range anomalies, disguised missing, duplicates, linkage pitfalls | [A] |
 | | Bias, fitness for purpose | [O] + [D] |
 | Governance | Everything | [O] |
 
 A page with no **[O]** gaps is either owner-confirmed (✅) or wrong. A 🟡 Draft page is
 *expected* to be full of explicit **[O]** unknowns — that is the page doing its job.
 
-## E.2 Choose a documentation tier before you start
+## D.2 Choose a documentation tier before you start
 
 There are ~275 profiled objects and a much smaller number of dataset families. Full pages
 for all of them is neither achievable nor useful.
@@ -392,7 +458,7 @@ for all of them is neither achievable nor useful.
 
 A T3 object must never be silently dropped. "Not documented" is a status; absence is not.
 
-## E.3 Profiler caveats you must not paper over
+## D.3 Profiler caveats you must not paper over
 
 The generated blocks look authoritative because they are numeric. They are heuristics run
 over a sample — every caveat below is a real property of `tools/s3_data_catalog.py`, and
@@ -402,23 +468,42 @@ each has a place in the template where it must be disclosed.
 |---|---|---|
 | **Types are inferred, not declared** | From the first 2,000 non-null values: numeric if ≥95% parse, date if ≥80% parse (≥50% with a date-like name), `id_like` if >50% of values hold >7 digits | Key Variables — write "profiler inferred numeric", never "the column is numeric" |
 | **A column can be mistyped by its first chunk** | The sample is drawn from the first chunk only; a column clean early and messy later keeps the early type | Value-range anomalies |
-| **Dates parsed `dayfirst=True`** | `01/02/2021` reads as 1 February. If the source is month-first, every derived range is wrong | Time Coverage; Additional Notes |
+| **Dates parsed `dayfirst=True`** | `01/02/2021` reads as 1 February. If the source is month-first, every derived range is wrong | Time Coverage |
 | **Missingness has a fixed null vocabulary** | Only `""`, `NA`, `N/A`, `NULL`, `null`, `None`, `NaN`, `.` count as missing | Disguised missing — the most important caveat here |
 | **Bad rows skipped silently** | `on_bad_lines="skip"` | Dataset Information — row counts are a lower bound |
 | **Encoding may have been coerced** | UTF-8 first, silent fall back to latin-1 with `errors="replace"` | Other limitations |
-| **High-cardinality counts approximate** | Value counting stops above 200,000 uniques | Appendix B |
-| **Top values are top 20, not the domain** | `TOP_N = 20` | Value dictionaries — never present as a complete code list |
-| **`id_like` columns have no value profile** | Suppressed deliberately | Key Variables; PII exposure |
+| **No value profile in the condensed report** | The summary carries three fields per column — name, inferred type, missing % — and no top-values, distinct or min/max block | Key Variables; Appendix A — do not write a value list this run cannot support |
+| **`id_like` columns are additionally suppressed** | Value profiling is skipped for them by design | Key Variables; PII exposure |
 | **Everything is per-object, not per-family** | The profiler does not know `_P1`…`_P8` are one dataset | Dataset Information — give per-object **and** family totals |
 | **Distinct patients never computed** | No cross-column or cross-file uniqueness | Rows vs people; Sample size |
-| **A profile is a snapshot** | `profiled_at` | Header; Appendix C |
+| **A profile is a snapshot** | `profiled_at` | Header; Appendix B |
 
-An `id_like` classification carries two meanings, and both go in the page: the profiler
-suppressed its top values, so you have no value dictionary for that column; and the values
-mostly contain more than 7 digits, which is a prima facie identifier / possible-PII signal
-to carry into Ownership & Governance.
+An `id_like` classification is a PII signal, not just a type: the values mostly contain more
+than 7 digits, which is prima facie identifier-shaped. Carry it into Ownership & Governance
+rather than leaving it as a row in Key Variables.
 
-## E.4 Definition of done — T1
+## D.4 Definition of done — pass 1 (base page)
+
+A base page is finished when it says everything the profiler establishes and claims nothing
+more. It is short, and being short is not a defect.
+
+- [ ] Header complete; every `.csv` object named in the objects table
+- [ ] Category filled from the dataset name — never unknown
+- [ ] Dataset Information transcribed per-object **and** family total, with the lower-bound note
+- [ ] Key Variables covers **every** column, with type and missing % per partition
+- [ ] Per-partition type disagreements recorded, both readings kept
+- [ ] Primary identifier named as the patient ID column — never "not determined"
+- [ ] Every remaining field present and marked unknown; none deleted, none guessed
+- [ ] Unknowns are one line each — no essays on what the profiler does not carry
+- [ ] Open-questions list complete and sendable as-is
+- [ ] Change log entry naming the profiler run and the source read
+- [ ] No bucket names, object URIs, credentials, patient-level values, or study findings
+
+**The failure mode to watch for is a plausible sentence.** Anything read off a column name —
+what a `_STD` suffix means, what an `_X`/`_Z` pair is, whether an `id_like` column identifies
+a patient, what the partitions are split by — is invention, and it will be believed.
+
+## D.5 Definition of done — T1 (pass 2, full page)
 
 - [ ] Header complete; row added to `datasets/index.md`
 - [ ] Aliases verbatim, with an extract date
@@ -429,7 +514,7 @@ to carry into Ownership & Governance.
 - [ ] Time Coverage attributed to a named date column
 - [ ] Key Variables covers **every** column — row count matches Appendix A
 - [ ] Every column has a Class and a Sensitivity value
-- [ ] Value dictionary for every categorical field used in cohort selection
+- [ ] No value list anywhere on the page that the cited profiler run did not produce
 - [ ] Every `_STD` / derived field either has its mapping documented or is explicitly flagged as undocumented
 - [ ] Primary identifier given with dtype and format, not just a name
 - [ ] Disguised-missing check done and reported, including "none found"
@@ -441,7 +526,7 @@ to carry into Ownership & Governance.
 - [ ] No bucket names, object URIs, credentials, patient-level values, or study findings
 - [ ] Change log entry added
 
-## E.5 The reviewer's three questions
+## D.6 The reviewer's three questions
 
 1. **Can I tell what one row is, and how many people that corresponds to?**
 2. **Can I tell, for every column I would rely on, whether it is a source value or somebody's interpretation of one?**
