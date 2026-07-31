@@ -51,6 +51,15 @@ and marked unknown.
 value domains, date ranges, linkage keys, bias, and the governance answers from the data
 owner.
 
+**The Status field in the header tells you which stage a page has reached**, and it is the
+only completeness signal on the page:
+
+| Status | Meaning | How much to trust it |
+|---|---|---|
+| ⚪ **Stub** | Pass 1 done — what the profiler establishes, and little else | The figures are sound; nearly everything about meaning is still unanswered |
+| 🟡 **Draft** | Pass 2 under way — some fields filled from analysis or from the data owner | Read the individual fields; unknowns are still expected and are marked as such |
+| ✅ **Verified** | Every field filled and confirmed with the data owner | Trust it, and check *Last reviewed* for how recently |
+
 **An unknown is a real entry, not a blank.** It tells a reader what to ask and whom, which is
 worth more than a plausible sentence someone inferred from a column name — the inference is
 what a later reader will act on. Nothing on a base page is guessed.

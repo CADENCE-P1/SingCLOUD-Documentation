@@ -62,9 +62,20 @@ read this once before your first dataset page — is in template_intro.md.
 | | |
 |---|---|
 | **Status** | ⚪ Stub / 🟡 Draft / ✅ Verified |
-| **Documentation tier** | T1 full / T2 short / T3 index-only |
 | **Profiled on** | {{PROFILED_AT}} |
 | **Last reviewed** | *not yet reviewed* |
+
+<!-- STATUS is the only completeness signal on the page. Pick one and keep it honest:
+       ⚪ Stub     — pass 1 done. Everything the profiler establishes, plus Category and
+                     Primary identifier. Every other field present and marked unknown.
+       🟡 Draft    — pass 2 under way. Some fields filled from analysis of the data or from
+                     the data owner; explicit [O] unknowns still expected and correct.
+       ✅ Verified — every field filled and confirmed with the data owner. A page with no
+                     [O] gaps is either ✅ or wrong.
+     Status describes how far the page has got, NOT how important the dataset is. Do not
+     downgrade a page's status to signal low demand, and do not mark a page ✅ because it
+     looks tidy — ✅ means someone confirmed it. -->
+
 
 **Objects included in this page**
 
@@ -445,20 +456,7 @@ finish this afternoon and what is blocked on someone else.
 A page with no **[O]** gaps is either owner-confirmed (✅) or wrong. A 🟡 Draft page is
 *expected* to be full of explicit **[O]** unknowns — that is the page doing its job.
 
-## D.2 Choose a documentation tier before you start
-
-There are ~275 profiled objects and a much smaller number of dataset families. Full pages
-for all of them is neither achievable nor useful.
-
-| Tier | Applies to | Required |
-|---|---|---|
-| **T1 — Full page** | Families anyone has asked for, or that carry the primary identifiers | Every field in this template |
-| **T2 — Short entry** | Known families with no current demand | Header, Dataset Information, Dataset Overview, Key Variables, primary identifier, data owner. Remaining sections present, marked *Not yet documented — tier T2* |
-| **T3 — Index row** | Objects that are partitions or near-duplicates of a documented family | A row in `datasets/index.md` pointing at the family page |
-
-A T3 object must never be silently dropped. "Not documented" is a status; absence is not.
-
-## D.3 Profiler caveats you must not paper over
+## D.2 Profiler caveats you must not paper over
 
 The generated blocks look authoritative because they are numeric. They are heuristics run
 over a sample — every caveat below is a real property of `tools/s3_data_catalog.py`, and
@@ -482,7 +480,7 @@ An `id_like` classification is a PII signal, not just a type: the values mostly 
 than 7 digits, which is prima facie identifier-shaped. Carry it into Ownership & Governance
 rather than leaving it as a row in Key Variables.
 
-## D.4 Definition of done — pass 1 (base page)
+## D.3 Definition of done — pass 1 (base page)
 
 A base page is finished when it says everything the profiler establishes and claims nothing
 more. It is short, and being short is not a defect.
@@ -503,7 +501,7 @@ more. It is short, and being short is not a defect.
 what a `_STD` suffix means, what an `_X`/`_Z` pair is, whether an `id_like` column identifies
 a patient, what the partitions are split by — is invention, and it will be believed.
 
-## D.5 Definition of done — T1 (pass 2, full page)
+## D.4 Definition of done — pass 2 (full page)
 
 - [ ] Header complete; row added to `datasets/index.md`
 - [ ] Aliases verbatim, with an extract date
@@ -526,7 +524,7 @@ a patient, what the partitions are split by — is invention, and it will be bel
 - [ ] No bucket names, object URIs, credentials, patient-level values, or study findings
 - [ ] Change log entry added
 
-## D.6 The reviewer's three questions
+## D.5 The reviewer's three questions
 
 1. **Can I tell what one row is, and how many people that corresponds to?**
 2. **Can I tell, for every column I would rely on, whether it is a source value or somebody's interpretation of one?**

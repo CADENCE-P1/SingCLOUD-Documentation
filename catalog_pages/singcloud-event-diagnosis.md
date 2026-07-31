@@ -25,7 +25,6 @@ defensible. Both are legitimate; know which you are writing.
 | | |
 |---|---|
 | **Status** | ⚪ Stub |
-| **Documentation tier** | T2 short |
 | **Profiled on** | 2026-07-23 |
 | **Last reviewed** | *not yet reviewed* |
 
@@ -42,6 +41,18 @@ defensible. Both are legitimate; know which you are writing.
 
 All six sit under the prefix `common-data/SingCLoud/FreeText_FTA/`. Six objects, 32,000,357
 rows, 33 columns each.
+
+---
+
+## Read this first
+
+| | Issue | What to do |
+|---|---|---|
+| 🔴 | **Unit of observation is unknown** — nothing establishes what one row represents or what makes rows multiply | Until answered, no row count here converts into diagnoses, encounters or patients |
+| 🟡 | **`DISCHARGE_OUTCOME` is 100% empty** in all six partitions; `DIAG_OCCURENCE_DATE_X`/`_Z` are 100% empty in P5–P6 but populated in P1–P4 | Deprecated, or populated in a source not delivered? |
+| 🟡 | **Three columns change type between partitions** — `DIAGNOSIS_NAME_ETS_ID` (categorical / id_like / numeric), `DIAG_SERVICE_SPECIALTY_ETS_ID` (id_like in P4), `DIAG_OCCURENCE_DATE_X`/`_Z` (date then categorical) | pandas infers per file too. Read them as `str` explicitly |
+| 🟡 | **`DIAG_OCCURENCE_DATE`** — `OCCURENCE`, one `R`, in all six partitions | Copy character for character |
+| 🟡 | **22 of 33 columns are >50% empty** in every partition | Check which are usable before designing around them |
 
 ---
 
@@ -100,41 +111,41 @@ mandatory under `template.md` and needs a data dictionary or the owner: a suffix
 **Every column on this page is unclassified**, and the page cannot reach ✅ Verified until that
 is resolved.
 
-| # | Variable | Type | P1 | P2 | P3 | P4 | P5 | P6 |
-|---:|---|---|---:|---:|---:|---:|---:|---:|
-| 1 | `DATA_SOURCE` | categorical | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 2 | `EVN_ID_EXTN` | id_like | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 3 | `PATIENT_ID_EXTN_X` | id_like | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 4 | `VISIT_ADMIN_DATE_X` | date | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 5 | `VISIT_ADMIN_DATE_Z` | date | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 6 | `DISCHARGE_DATE_X` | date | 61.49 | 55.12 | 55.13 | 54.33 | 54.79 | 55.68 |
-| 7 | `DISCHARGE_DATE_Z` | date | 61.49 | 55.12 | 55.13 | 54.33 | 54.79 | 55.68 |
-| 8 | `PATIENT_TYPE_ETS_ID` | categorical | 0.3 | 0.04 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 9 | `EVN_FACILITY_EXTN` | categorical | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 10 | `EVN_SERVICE_SPECIALTY_ETS_ID` | categorical | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 11 | `MOV_TYPE_ETS_ID` | categorical | 17.02 | 13.93 | 13.71 | 12.7 | 12.11 | 12.45 |
-| 12 | `MOV_CAT_ETS_ID` | categorical | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| 13 | `DISCHARGE_OUTCOME` | categorical | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
-| 14 | `DISCHARGE_DISPOSITION_ETS_ID` | categorical | 59.6 | 60.72 | 60.46 | 60.19 | 59.21 | 58.56 |
-| 15 | `DOC_TYPE_CODE` | categorical | 77.77 | 70.01 | 74.33 | 74.5 | 73.01 | 72.13 |
-| 16 | `DOC_TYPE_ETS_ID` | categorical | 77.77 | 70.01 | 74.33 | 74.5 | 73.01 | 72.13 |
-| 17 | `DIAG_SERVICE_SPECIALTY_ETS_ID` | categorical; **id_like in P4** | 77.77 | 70.01 | 74.33 | 74.5 | 73.01 | 72.13 |
-| 18 | `DIAGNOSIS_NAME_ETS_ID` | **categorical P1; id_like P2–P3; numeric P4–P6** | 78.66 | 70.02 | 74.35 | 74.66 | 73.21 | 72.32 |
-| 19 | `DIAGNOSIS_TYPE_ETS_ID` | categorical | 77.77 | 70.01 | 74.33 | 74.5 | 73.01 | 72.13 |
-| 20 | `DIAGNOSIS_TYPE_TXT` | categorical | 91.05 | 78.09 | 81.75 | 81.39 | 79.74 | 79.25 |
-| 21 | `DIAG_STATUS_ETS_ID` | categorical | 96.3 | 86.23 | 89.19 | 87.99 | 87.18 | 86.94 |
-| 22 | `DIAG_ONSET_DATE_X` | date | 98.22 | 92.71 | 94.7 | 94.78 | 93.88 | 84.86 |
-| 23 | `DIAG_ONSET_DATE_Z` | date | 98.22 | 92.71 | 94.7 | 94.78 | 93.88 | 84.86 |
-| 24 | `DIAG_OCCURENCE_DATE_X` | **date P1–P4; categorical P5–P6** | 89.01 | 91.92 | 92.59 | 96.36 | 100.0 | 100.0 |
-| 25 | `DIAG_OCCURENCE_DATE_Z` | **date P1–P4; categorical P5–P6** | 89.01 | 91.92 | 92.59 | 96.36 | 100.0 | 100.0 |
-| 26 | `EVN_SERVICE_SPECIALTY_TXT` | categorical | 94.84 | 93.73 | 92.74 | 90.48 | 89.72 | 89.22 |
-| 27 | `DIAG_SERVICE_SPECIALTY_TXT` | categorical | 83.19 | 75.52 | 80.91 | 83.22 | 82.39 | 79.48 |
-| 28 | `EVN_SERVICE_SPECIALTY_TXT_STD` | categorical | 0.74 | 0.81 | 0.9 | 1.0 | 1.12 | 0.96 |
-| 29 | `DIAG_SERVICE_SPECIALTY_TXT_STD` | categorical | 77.92 | 70.24 | 74.59 | 74.53 | 73.06 | 70.78 |
-| 30 | `ICD_CODE_PMH_STD` | categorical | 94.95 | 93.92 | 92.95 | 90.48 | 89.73 | 90.08 |
-| 31 | `ICD_CODE_OUTCOME_STD` | categorical | 99.29 | 99.08 | 99.06 | 99.06 | 98.96 | 98.73 |
-| 32 | `DIAGNOSIS_NAME_TXT` | categorical | 84.21 | 76.27 | 81.58 | 83.99 | 83.26 | 80.66 |
-| 33 | `DIAGNOSIS_NAME_TXT_STD` | categorical | 78.61 | 70.94 | 75.29 | 75.43 | 74.05 | 71.68 |
+| # | Variable | Type | P1 | P2 | P3 | P4 | P5 | P6 | Description | Class | Coding / units | Sensitivity |
+|---:|---|---|---:|---:|---:|---:|---:|---:|---|---|---|---|
+| 1 | `DATA_SOURCE` | categorical | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 2 | `EVN_ID_EXTN` | id_like | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 3 | `PATIENT_ID_EXTN_X` | id_like | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 4 | `VISIT_ADMIN_DATE_X` | date | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 5 | `VISIT_ADMIN_DATE_Z` | date | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 6 | `DISCHARGE_DATE_X` | date | 61.49 | 55.12 | 55.13 | 54.33 | 54.79 | 55.68 | | | | |
+| 7 | `DISCHARGE_DATE_Z` | date | 61.49 | 55.12 | 55.13 | 54.33 | 54.79 | 55.68 | | | | |
+| 8 | `PATIENT_TYPE_ETS_ID` | categorical | 0.3 | 0.04 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 9 | `EVN_FACILITY_EXTN` | categorical | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 10 | `EVN_SERVICE_SPECIALTY_ETS_ID` | categorical | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 11 | `MOV_TYPE_ETS_ID` | categorical | 17.02 | 13.93 | 13.71 | 12.7 | 12.11 | 12.45 | | | | |
+| 12 | `MOV_CAT_ETS_ID` | categorical | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | | | | |
+| 13 | `DISCHARGE_OUTCOME` | categorical | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | | | | |
+| 14 | `DISCHARGE_DISPOSITION_ETS_ID` | categorical | 59.6 | 60.72 | 60.46 | 60.19 | 59.21 | 58.56 | | | | |
+| 15 | `DOC_TYPE_CODE` | categorical | 77.77 | 70.01 | 74.33 | 74.5 | 73.01 | 72.13 | | | | |
+| 16 | `DOC_TYPE_ETS_ID` | categorical | 77.77 | 70.01 | 74.33 | 74.5 | 73.01 | 72.13 | | | | |
+| 17 | `DIAG_SERVICE_SPECIALTY_ETS_ID` | categorical; **id_like in P4** | 77.77 | 70.01 | 74.33 | 74.5 | 73.01 | 72.13 | | | | |
+| 18 | `DIAGNOSIS_NAME_ETS_ID` | **categorical P1; id_like P2–P3; numeric P4–P6** | 78.66 | 70.02 | 74.35 | 74.66 | 73.21 | 72.32 | | | | |
+| 19 | `DIAGNOSIS_TYPE_ETS_ID` | categorical | 77.77 | 70.01 | 74.33 | 74.5 | 73.01 | 72.13 | | | | |
+| 20 | `DIAGNOSIS_TYPE_TXT` | categorical | 91.05 | 78.09 | 81.75 | 81.39 | 79.74 | 79.25 | | | | |
+| 21 | `DIAG_STATUS_ETS_ID` | categorical | 96.3 | 86.23 | 89.19 | 87.99 | 87.18 | 86.94 | | | | |
+| 22 | `DIAG_ONSET_DATE_X` | date | 98.22 | 92.71 | 94.7 | 94.78 | 93.88 | 84.86 | | | | |
+| 23 | `DIAG_ONSET_DATE_Z` | date | 98.22 | 92.71 | 94.7 | 94.78 | 93.88 | 84.86 | | | | |
+| 24 | `DIAG_OCCURENCE_DATE_X` | **date P1–P4; categorical P5–P6** | 89.01 | 91.92 | 92.59 | 96.36 | 100.0 | 100.0 | | | | |
+| 25 | `DIAG_OCCURENCE_DATE_Z` | **date P1–P4; categorical P5–P6** | 89.01 | 91.92 | 92.59 | 96.36 | 100.0 | 100.0 | | | | |
+| 26 | `EVN_SERVICE_SPECIALTY_TXT` | categorical | 94.84 | 93.73 | 92.74 | 90.48 | 89.72 | 89.22 | | | | |
+| 27 | `DIAG_SERVICE_SPECIALTY_TXT` | categorical | 83.19 | 75.52 | 80.91 | 83.22 | 82.39 | 79.48 | | | | |
+| 28 | `EVN_SERVICE_SPECIALTY_TXT_STD` | categorical | 0.74 | 0.81 | 0.9 | 1.0 | 1.12 | 0.96 | | | | |
+| 29 | `DIAG_SERVICE_SPECIALTY_TXT_STD` | categorical | 77.92 | 70.24 | 74.59 | 74.53 | 73.06 | 70.78 | | | | |
+| 30 | `ICD_CODE_PMH_STD` | categorical | 94.95 | 93.92 | 92.95 | 90.48 | 89.73 | 90.08 | | | | |
+| 31 | `ICD_CODE_OUTCOME_STD` | categorical | 99.29 | 99.08 | 99.06 | 99.06 | 98.96 | 98.73 | | | | |
+| 32 | `DIAGNOSIS_NAME_TXT` | categorical | 84.21 | 76.27 | 81.58 | 83.99 | 83.26 | 80.66 | | | | |
+| 33 | `DIAGNOSIS_NAME_TXT_STD` | categorical | 78.61 | 70.94 | 75.29 | 75.43 | 74.05 | 71.68 | | | | |
 
 *(P1–P6 are missing %; profiler, 2026-07-23)*
 
@@ -173,6 +184,10 @@ of these columns is month-first, every date derived from it is wrong and nothing
 **Variable availability over time:** Unknown. The per-partition missing percentages in *Key
 Variables* are **not** a time series: what the `_P{n}` split is by, and whether the partitions
 are ordered, are both unknown.
+
+| Variable | Usable from | Evidence |
+|---|---|---|
+| | | |
 
 ---
 
@@ -253,11 +268,15 @@ about the unit of observation, and not whether it is a defect.
 **Columns that matter:** Unknown — ranking columns by consequence needs their descriptions.
 Full per-column figures are in *Key Variables*.
 
-**Disguised missing:** **Not checked.** Sentinels such as `UNKNOWN`, `NIL`, `9`, `999` or
-`1900-01-01` are counted as *present* by the profiler, whose null vocabulary is fixed: only
-`""`, `NA`, `N/A`, `NULL`, `null`, `None`, `NaN` and `.` count as missing. **Do not read "0.0%
-missing" on this page as "0.0% unusable"** — eight columns are reported 0.0% missing in all
-six partitions and the check is outstanding for every one of them.
+| Variable | Missing % | Consequence if unusable |
+|---|---:|---|
+| | | |
+**Disguised missing:** **Not checked.**
+
+- Profiler counts only `""`, `NA`, `N/A`, `NULL`, `null`, `None`, `NaN`, `.` as missing.
+- `UNKNOWN`, `NIL`, `9`, `999`, `1900-01-01` all read as *present* — invisible in these figures.
+- **Do not read "0.0% missing" on this page as "0.0% unusable"** — eight columns are reported 0.0% missing in all six partitions and the check is outstanding for every one of them.
+- Run `value_counts()` before trusting any 0.0% figure.
 
 ### Overlap
 
