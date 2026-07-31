@@ -119,10 +119,11 @@ mid-table.)*
   width is this, not 575 distinct concepts.
 - **`REDCAP_DATA_ACCESS_GROUP` is an access-control field** — usually the owning site or team.
   The export may span groups whose upstream permissions differ.
-- **Retracted:** a cardiac-catheterisation block (`LPA1_SAT`, `OCXLAB`, `SEPTLAB` …) sits at a
-  damaged join in `section_04.png` and was briefly thought to be this family. It is not —
-  those are haemodynamic saturations, these are REDCap study variables. That block is
-  unidentified, probably one of the ~68 objects missing from the reconstruction index.
+- **Resolved:** a cardiac-catheterisation block (`LPA1_SAT`, `OCXLAB`, `SEPTLAB` …) sits at a
+  damaged join in `section_04.png` and was briefly thought to be this family. It is
+  **`VW_NUHCS_ECHO_D`** (270,906 rows × 371 columns) — identified by the full screenshot sweep
+  of 2026-07-31, which read the object order either side of the seam. It is covered by
+  [the dimension index](singcloud-dimension-tables-index.md), not by this page.
 
 > **Value strings drift between extracts** (`SINGAPORE PINK IC` vs `SINGAPORE PINK NRIC`).
 > This page lists no values for any column. Enumerate the distinct values in your own extract

@@ -9,35 +9,20 @@
 **Objects included in this page**
 
 `VW_IP_BILLING_F_Export_{date}_P{n}.csv`, under the prefix
-`common-data/SingCLoud/NonFreeText_Files/`. Thirty-three objects are indexed below.
+`common-data/SingCLoud/NonFreeText_Files/`.
 
-> ⚠ **The object list is incomplete and the partition count is unconfirmed.** The profiler
-> report runs IP Billing continuously from section_13 through section_16 of the screenshots —
-> roughly 38 blocks — while only 33 objects could be indexed. Some partitions are therefore
-> present in the run but not listed here. **Do not treat the totals below as family totals.**
-> Establishing the true partition list is the first open question on this page.
+**37 objects, P1 through P37, with no gaps.**
 
-| # | Object | # | Object |
-|---:|---|---:|---|
-| 1 | `…_05-08-2024_P1.csv` | 18 | `…_06-08-2024_P20.csv` |
-| 2 | `…_05-08-2024_P2.csv` | 19 | `…_06-08-2024_P21.csv` |
-| 3 | `…_05-08-2024_P3.csv` | 20 | `…_06-08-2024_P22.csv` |
-| 4 | `…_05-08-2024_P6.csv` | 21 | `…_06-08-2024_P23.csv` |
-| 5 | `…_05-08-2024_P7.csv` | 22 | `…_06-08-2024_P24.csv` |
-| 6 | `…_05-08-2024_P10.csv` | 23 | `…_06-08-2024_P25.csv` |
-| 7 | `…_05-08-2024_P11.csv` | 24 | `…_06-08-2024_P26.csv` |
-| 8 | `…_05-08-2024_P12.csv` | 25 | `…_06-08-2024_P27.csv` |
-| 9 | `…_05-08-2024_P13.csv` | 26 | `…_06-08-2024_P28.csv` |
-| 10 | `…_05-08-2024_P14.csv` | 27 | `…_06-08-2024_P29.csv` |
-| 11 | `…_05-08-2024_P15.csv` | 28 | `…_06-08-2024_P30.csv` |
-| 12 | `…_05-08-2024_P16.csv` | 29 | `…_06-08-2024_P31.csv` |
-| 13 | `…_05-08-2024_P17.csv` | 30 | `…_06-08-2024_P32.csv` |
-| 14 | `…_05-08-2024_P18.csv` | 31 | `…_06-08-2024_P33.csv` |
-| 15 | `…_06-08-2024_P19.csv` | 32 | `…_06-08-2024_P34.csv` |
-| 16 | `…_06-08-2024_P36.csv` | 33 | `…_06-08-2024_P35.csv` |
-| 17 | `…_06-08-2024_P37.csv` | | |
+| Extract date | Partitions |
+|---|---|
+| `_Export_05-08-2024_` | P1 – P18 |
+| `_Export_06-08-2024_` | P19 – P37 |
 
-**P4, P5, P8 and P9 are absent** from this list, and the list itself is incomplete — see below.
+**`_Export_05-08-2024_P9.csv` failed to profile.** Where its size/rows/columns line should be,
+the report prints `STATUS: error - ResponseStreamingError: An error occurred while reading
+from response stream (Connection broken…)`. The object exists and is part of the family, but
+the profiler produced no figures for it — so it contributes nothing to the totals below and
+its schema is unverified.
 
 ---
 
@@ -45,12 +30,13 @@
 
 | | Issue | What to do |
 |---|---|---|
-| 🔴 | **The object list is incomplete** — the run spans four screenshot sections (~38 blocks) but only 33 objects could be indexed | Totals here are a lower bound, not a family total. Get a definitive file list before citing any count |
+| ✅ | **Partition list is complete and verified** — 37 objects, P1–P37, no gaps | Safe to treat as the whole family |
+| 🔴 | **P9 failed to profile** — the report prints a `ResponseStreamingError` where its figures should be | It is part of the family but contributes nothing to the totals, and its schema is unverified. Re-profile it |
 | 🔴 | **Two extract dates** — P1–P18 are `05-08-2024`, P19+ are `06-08-2024` | If these are separate extracts rather than halves of one, rows may be duplicated across them |
 | 🟡 | **`SPECIALITY`, not `SPECIALTY`** in `FK_ADMIT_PATIENT_SPECIALITY_ID` and `FK_DISCHARGE_SPECIALITY_ID` | The clinical families use `SPECIALTY`. Easy KeyError |
 | 🟡 | **`FK_DISCHARGE_DATE_IDK_X`/`_Z` profile as `categorical`**, not `date` | Do not assume they parse |
 | 🟡 | **Patient column is `FK_PATIENT_ID_X`** — OP Billing uses `EXT_PATIENT_CD_X` despite the same prefix and a near-identical schema | Confirm whether it is the same identifier space |
-| 📋 | P4, P5, P8, P9 absent from the indexed set | Confirm whether they exist |
+| 📋 | Figures still missing for **P4** (index has none) and **P9** (profiling error) | Two of 37 partitions have no size/row counts. Totals below cover 35 |
 
 ---
 
@@ -408,19 +394,24 @@ identical. Both carry 37 rows, matching the 37 columns declared for every indexe
 
 | Date | Change | By |
 |---|---|---|
-| 2026-07-31 | Page created against `template.md` from the profiler run of 2026-07-23. Column names and types transcribed from the screenshots for P10 and P35; object-level figures for 32 indexed objects. Object list flagged incomplete — the screenshot run is longer than the index. Category from the dataset name and `FK_PATIENT_ID_X` as primary identifier, both by catalogue convention. | CCJX |
+| 2026-07-31 | Page created against `template.md` from the profiler run of 2026-07-23. Partition list established as P1–P37 by a full sweep of the screenshot report. Column names and types transcribed from the screenshots for P10 and P35; object-level figures for 35 of 37 partitions. Category from the dataset name and `FK_PATIENT_ID_X` as primary identifier, both by catalogue convention. | CCJX |
 
 ## Appendix C — Sources
 
 - **Profiler run 2026-07-23** — column names, types and per-column missing % read from
   `source_material/screenshots/mass_columns_screenshots/section_13.png` (P10) and
-  `section_15.png` (P35). The family's blocks run continuously from section_13 to at least
-  section_16. Object-level figures for the indexed objects from the same run.
+  `section_15.png` (P35). The family's blocks run continuously from section_13 to section_16.
+  Partition list established by a full separator sweep of all 28 screenshot sections.
 - `tools/s3_data_catalog.py` — cited only for the profiler's documented behaviour, never for
   any property of this dataset.
-- **Not used for column names:** `source_material/imported/profiler_report_full.txt` and
-  `column_summary.csv`, which are OCR reconstructions that corrupt column names. For this
-  family the reconstruction also under-counts objects and mangles filenames
-  (`VW_IP_BILLING_F_Export:_05-08-2024_P14.c5v`, `VW_IP_BILLING_F-_Export_06-08-2024_P26.csv`),
-  which is why the partition count here is marked unconfirmed rather than taken from it.
+- **Not used for the object list or column names:** `source_material/imported/profiler_report_full.txt`
+  and `column_summary.csv`, which are OCR reconstructions. For this family they are especially
+  unreliable, and anyone consulting them directly should know that:
+  - Filenames are mangled — `VW_IP_BILLING_F_Export:_05-08-2024_P14.c5v`,
+    `VW_IP_BILLING_F-_Export_06-08-2024_P26.csv`.
+  - **Two partitions appear there as separate datasets that do not exist.**
+    `VW_TP_BILLING_F_..._P5.csv` (under a `NonFreeText_Flles` prefix) is P5; and
+    `VW_LIP_BILLING_F_..._P8.csv` is P8. Both carry figures identical to the real partitions —
+    1,023.58 MB / 3,157,211 rows and 1,465.94 MB / 4,530,134 rows respectively. There is no
+    TP Billing or LIP Billing dataset in SingCLOUD.
 - **Data owner correspondence — none.** Every governance field on this page is unconfirmed.
