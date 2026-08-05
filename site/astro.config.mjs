@@ -33,7 +33,11 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Datasets',
+          label: 'Data catalog',
+          items: [{ autogenerate: { directory: 'catalog' } }],
+        },
+        {
+          label: 'Analyst notes',
           items: [{ autogenerate: { directory: 'datasets' } }],
         },
       ],

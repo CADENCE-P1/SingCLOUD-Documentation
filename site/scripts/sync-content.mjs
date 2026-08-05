@@ -34,13 +34,17 @@ const IMAGE_EXTS = new Set(['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp']);
 /** Repo directory → site section. */
 const SECTIONS = [
   { src: 'docs', out: 'guides' },
+  { src: 'catalog_pages', out: 'catalog' },
   { src: 'datasets', out: 'datasets' },
 ];
 
-/** Pages pinned to the top of the auto-generated Datasets sidebar group. */
+/** Pages pinned to the top of their auto-generated sidebar group. */
 const PINNED = {
-  'datasets/index.md': { order: 0, label: 'Dataset index' },
-  'datasets/full_inventory.md': { order: 1, label: 'Full platform inventory' },
+  'catalog_pages/index.md': { order: 0, label: 'Page index' },
+  'catalog_pages/template_intro.md': { order: 1, label: 'How to read a page' },
+  'catalog_pages/template.md': { order: 2, label: 'Page template' },
+  'datasets/index.md': { order: 0, label: 'Notes index' },
+  'datasets/full_inventory.md': { order: 1, label: 'Full inventory (OCR)' },
 };
 
 const STATUS_BADGES = {
@@ -106,7 +110,10 @@ for (const { src, out } of SECTIONS) {
     const frontmatter = { title, editUrl: `${REPO_URL}/edit/main/${repoPath}` };
 
     const sidebar = { ...(PINNED[repoPath] ?? {}) };
-    const status = md.match(/\|\s*\*\*Status\*\*\s*\|\s*(✅|🟡|⚪)/);
+    // Structural pages (indexes, templates) carry no status of their own.
+    const status = PINNED[repoPath]
+      ? null
+      : md.match(/\|\s*\*\*Status\*\*\s*\|\s*(✅|🟡|⚪)/);
     if (status) sidebar.badge = STATUS_BADGES[status[1]];
     if (Object.keys(sidebar).length > 0) frontmatter.sidebar = sidebar;
 

@@ -67,6 +67,6 @@ what a later reader will act on. Nothing on a base page is guessed.
 ---
 
 A worked example of a pass-1 page is
-[`template_sample_singcloud-event-diagnosis_screenshots-only.md`](template_sample_singcloud-event-diagnosis_screenshots-only.md).
+[`singcloud-event-diagnosis.md`](singcloud-event-diagnosis.md).
 Field-by-field guidance is in Appendix D of [`template.md`](template.md) itself. The reasoning
-behind the structure is in [`docs/00_rationale.md`](docs/00_rationale.md).
+behind the structure is in [`docs/00_rationale.md`](../docs/00_rationale.md).

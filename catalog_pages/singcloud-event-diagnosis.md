@@ -210,7 +210,7 @@ deliberately: the per-object percentages are shares of six different denominator
 be averaged.
 
 *Every row count above is a lower bound: the profiler reads with `on_bad_lines="skip"`
-([tools/s3_data_catalog.py](tools/s3_data_catalog.py)), so unparseable lines are dropped
+([tools/s3_data_catalog.py](../tools/s3_data_catalog.py)), so unparseable lines are dropped
 silently and never counted. The gap cannot be measured from this output.*
 
 | Metric | Value |

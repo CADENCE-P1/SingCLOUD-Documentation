@@ -60,11 +60,16 @@ docs/                     The documentation standard and cross-cutting guides
   02_access_and_governance.md    Ownership, approvals, access model
   03_linkage_guide.md            Identifiers, coding standards, linkage pitfalls
 
-datasets/                 One page per dataset family — the core of the catalogue
-  index.md                Master table of documented datasets, with status
-  full_inventory.md       Complete platform scope: ~80 families, 275 datasets
-  _TEMPLATE.md            Copy this to add a new dataset
-  <dataset>.md
+catalog_pages/            The data catalog — one page per dataset family
+  index.md                Page index: which catalog page covers which object
+  template_intro.md       How to read a catalog page; the two-pass process
+  template.md             Copy this to add a new catalog page
+  singcloud-<family>.md   17 pages covering every object the profiler found
+
+datasets/                 Analyst notes from the 2024-07 extract (supplement
+  index.md                the catalog pages; to be folded in during pass 2)
+  full_inventory.md       Superseded OCR inventory, kept for traceability
+  singcloud-<dataset>.md
 
 source_material/          Raw inputs the documentation is built from
   screenshots/            Dataset-summary screenshots (drop them here)
@@ -72,6 +77,8 @@ source_material/          Raw inputs the documentation is built from
 
 tools/
   s3_data_catalog.py      Profiler that generates dataset/column summaries from S3
+
+site/                     The Astro Starlight site that publishes all of the above
 ```
 
 ---
@@ -87,14 +94,16 @@ so readers can tell verified documentation from a working draft:
 | 🟡 **Draft** | Written from profiler output and/or analyst working knowledge; not owner-confirmed |
 | ⚪ **Stub** | Dataset known to exist; contents not yet documented |
 
-Most pages are currently 🟡 **Draft**. See [datasets/index.md](datasets/index.md) for the
-per-dataset breakdown.
+**Every object the profiler found belongs to a catalog page** — 17 pages covering 76
+dataset families across 206 objects (profiler run 2026-07-23). See
+[catalog_pages/index.md](catalog_pages/index.md) for the object-to-page mapping. Most
+pages are currently ⚪ base pages: figures are sound, meaning is still being filled in.
+The pages in [datasets/](datasets/index.md) are analyst notes from a 2024-07 extract
+that supplement the corresponding catalog pages.
 
-**Coverage is the bigger caveat.** 13 dataset families are documented; the platform holds
-roughly **80 families across 275 datasets**. Whole domains — billing, cardiac registries,
-cardiac imaging, procedures — have no page yet. Check
-[datasets/full_inventory.md](datasets/full_inventory.md) before concluding a dataset you
-need does not exist.
+The catalogue's scope is the **SingCLOUD platform**. Notes on non-SingCLOUD datasets
+(MediClaims, COVID-19 registries, Death Registry, NIR, serology) were removed when the
+scope was narrowed; they remain in the git history.
 
 ---
 
@@ -122,10 +131,12 @@ for traceability and should be superseded by proper `datasets/*.md` pages over t
 
 To add or update a dataset:
 
-1. Copy [datasets/_TEMPLATE.md](datasets/_TEMPLATE.md) to `datasets/<dataset-name>.md`.
-2. Fill in all four sections. Write "Unknown — to confirm with data owner" rather than
+1. Copy [catalog_pages/template.md](catalog_pages/template.md) to
+   `catalog_pages/singcloud-<family>.md`. Read
+   [catalog_pages/template_intro.md](catalog_pages/template_intro.md) first.
+2. Fill in the sections. Write "Unknown — to confirm with data owner" rather than
    leaving a section blank; a visible gap is useful, a silent one is not.
-3. Add a row to [datasets/index.md](datasets/index.md).
+3. Add a row to [catalog_pages/index.md](catalog_pages/index.md).
 4. Open a pull request.
 
 Do not commit patient-level data, extracts, or any file containing real identifiers. See

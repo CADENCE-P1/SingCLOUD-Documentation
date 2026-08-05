@@ -3,6 +3,8 @@ node_modules/
 dist/
 .astro/
 
-# Synced at build time from ../docs and ../datasets — edit those, not these
+# Synced at build time from ../docs, ../catalog_pages and ../datasets —
+# edit those, not these
 src/content/docs/guides/
+src/content/docs/catalog/
 src/content/docs/datasets/

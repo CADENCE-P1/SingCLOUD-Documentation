@@ -15,8 +15,8 @@ hero:
     written so stakeholders can evaluate, compare and select datasets
     before committing to an access request.
   actions:
-    - text: Browse the datasets
-      link: datasets/
+    - text: Browse the data catalog
+      link: catalog/
       icon: right-arrow
       variant: primary
     - text: Why this catalogue exists
@@ -57,40 +57,43 @@ datasets can be compared like for like. An absent answer is recorded as
 
 ## Documentation status
 
-Every page carries a status badge, so verified documentation is
-distinguishable from a working draft:
+Catalog pages are built in two passes — a **base page** recording everything
+the profiler establishes, then a **filled page** adding meaning, linkage and
+governance. The status badge on each page tells you which stage it has
+reached:
 
-- <Badge text="Verified" variant="success" /> — reviewed against the profiler
-  output **and** confirmed with the data owner
-- <Badge text="Draft" variant="caution" /> — written from profiler output
-  and/or analyst working knowledge; not owner-confirmed
-- <Badge text="Stub" variant="note" /> — dataset known to exist; contents not
-  yet documented
+- <Badge text="Stub" variant="note" /> — pass 1 done: objects, sizes, rows,
+  columns and missingness are sound; nearly everything about *meaning* is
+  still unanswered
+- <Badge text="Draft" variant="caution" /> — pass 2 under way: some fields
+  filled from analysis or the data owner; unknowns still expected and marked
+- <Badge text="Verified" variant="success" /> — every field filled **and**
+  confirmed with the data owner
 
-:::caution[Coverage is the bigger caveat]
-13 dataset families are documented so far, but the platform holds roughly
-**80 families across 275 datasets**. Whole domains — billing, cardiac
-registries, cardiac imaging, procedures — have no page yet. Check the
-[full platform inventory](datasets/full_inventory/) before concluding that a
-dataset you need does not exist.
+:::note[Coverage]
+**Every object the profiler found belongs to a catalog page** — 17 pages
+covering 76 dataset families across 206 objects (profiler run 2026-07-23).
+Most pages are base pages: the figures are sound, but descriptions, linkage
+and governance are still being filled in. The
+[page index](catalog/) maps every file on the platform to its page.
 :::
 
 ## Start here
 
 <CardGrid>
   <LinkCard
-    title="Dataset index"
-    description="Master table of documented datasets with status, identifiers and coverage at a glance."
-    href="datasets/"
+    title="Catalog page index"
+    description="Which catalog page covers which object — start here to find the page for a file you are holding."
+    href="catalog/"
   />
   <LinkCard
-    title="Full platform inventory"
-    description="The complete platform scope: ~80 dataset families, 275 datasets, ~734M rows."
-    href="datasets/full_inventory/"
+    title="How to read a catalog page"
+    description="What each section tells you, the two-pass process, and what the status badges mean."
+    href="catalog/template_intro/"
   />
   <LinkCard
     title="Documentation standard"
-    description="The four required sections that every dataset page must fill in."
+    description="The required fields that every dataset page must fill in."
     href="guides/01_documentation_standard/"
   />
   <LinkCard
